@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { User, Mail, FileText, Lock, CheckCircle2, ShieldAlert, Sun, Moon, LogOut } from 'lucide-react';
+import { User, Mail, FileText, Lock, CheckCircle2, Sun, Moon, LogOut } from 'lucide-react';
 import { profileSchema, changePasswordSchema } from '../schemas';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
@@ -145,8 +145,7 @@ const Profile = () => {
     });
   };
 
-  // Google social accounts have firebase UID and usually don't support custom password switches
-  const isSocialAccount = !user?.password && !!localStorage.getItem('token')?.startsWith('mock_google_token_');
+
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 pb-12">
@@ -378,97 +377,82 @@ const Profile = () => {
           </div>
         )}
 
-        {isSocialAccount ? (
-          /* Google Account disclaimer warning */
-          <div className="mt-8 flex items-start gap-3 rounded-2xl bg-amber-50 p-5 dark:bg-amber-950/20">
-            <ShieldAlert className="h-5 w-5 flex-shrink-0 text-amber-550" />
-            <div>
-              <h4 className="text-xs font-bold text-amber-800 dark:text-amber-400">
-                Social Account Linked
-              </h4>
-              <p className="mt-1 text-2xs text-amber-700/80 dark:text-amber-400/70">
-                You are currently logged in via Google Authentication. Password updates and changes are handled directly via your Google Account and cannot be edited locally.
-              </p>
+        <form onSubmit={handlePasswordSubmit(onPasswordSubmit)} className="mt-8 space-y-4">
+          <div className="grid gap-6 md:grid-cols-3">
+            {/* Current Password */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                Current Password
+              </label>
+              <div className="relative">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                  <Lock className="h-4.5 w-4.5 text-slate-400" />
+                </div>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  {...registerPassword('currentPassword')}
+                  className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition-all focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:focus:border-indigo-600"
+                />
+              </div>
+              {passwordErrors.currentPassword && (
+                <p className="text-2xs text-rose-500">{passwordErrors.currentPassword.message}</p>
+              )}
+            </div>
+
+            {/* New Password */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                New Password
+              </label>
+              <div className="relative">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                  <Lock className="h-4.5 w-4.5 text-slate-400" />
+                </div>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  {...registerPassword('newPassword')}
+                  className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition-all focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:focus:border-indigo-600"
+                />
+              </div>
+              {passwordErrors.newPassword && (
+                <p className="text-2xs text-rose-500">{passwordErrors.newPassword.message}</p>
+              )}
+            </div>
+
+            {/* Confirm New Password */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                Confirm New Password
+              </label>
+              <div className="relative">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                  <Lock className="h-4.5 w-4.5 text-slate-400" />
+                </div>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  {...registerPassword('confirmNewPassword')}
+                  className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition-all focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:focus:border-indigo-600"
+                />
+              </div>
+              {passwordErrors.confirmNewPassword && (
+                <p className="text-2xs text-rose-500">{passwordErrors.confirmNewPassword.message}</p>
+              )}
             </div>
           </div>
-        ) : (
-          <form onSubmit={handlePasswordSubmit(onPasswordSubmit)} className="mt-8 space-y-4">
-            <div className="grid gap-6 md:grid-cols-3">
-              {/* Current Password */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-                  Current Password
-                </label>
-                <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                    <Lock className="h-4.5 w-4.5 text-slate-400" />
-                  </div>
-                  <input
-                    type="password"
-                    placeholder="••••••••"
-                    {...registerPassword('currentPassword')}
-                    className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition-all focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:focus:border-indigo-600"
-                  />
-                </div>
-                {passwordErrors.currentPassword && (
-                  <p className="text-2xs text-rose-500">{passwordErrors.currentPassword.message}</p>
-                )}
-              </div>
 
-              {/* New Password */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-                  New Password
-                </label>
-                <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                    <Lock className="h-4.5 w-4.5 text-slate-400" />
-                  </div>
-                  <input
-                    type="password"
-                    placeholder="••••••••"
-                    {...registerPassword('newPassword')}
-                    className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition-all focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:focus:border-indigo-600"
-                  />
-                </div>
-                {passwordErrors.newPassword && (
-                  <p className="text-2xs text-rose-500">{passwordErrors.newPassword.message}</p>
-                )}
-              </div>
-
-              {/* Confirm New Password */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-                  Confirm New Password
-                </label>
-                <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                    <Lock className="h-4.5 w-4.5 text-slate-400" />
-                  </div>
-                  <input
-                    type="password"
-                    placeholder="••••••••"
-                    {...registerPassword('confirmNewPassword')}
-                    className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm outline-none transition-all focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-950 dark:focus:border-indigo-600"
-                  />
-                </div>
-                {passwordErrors.confirmNewPassword && (
-                  <p className="text-2xs text-rose-500">{passwordErrors.confirmNewPassword.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="flex justify-end pt-2">
-              <button
-                type="submit"
-                disabled={changePasswordMutation.isPending}
-                className="rounded-xl bg-indigo-600 px-6 py-3.5 text-xs font-bold text-white shadow-md shadow-indigo-600/10 transition-all hover:bg-indigo-700 active:scale-97 disabled:opacity-50"
-              >
-                {changePasswordMutation.isPending ? 'Updating password...' : 'Update Password'}
-              </button>
-            </div>
-          </form>
-        )}
+          <div className="flex justify-end pt-2">
+            <button
+              type="submit"
+              disabled={changePasswordMutation.isPending}
+              className="rounded-xl bg-indigo-600 px-6 py-3.5 text-xs font-bold text-white shadow-md shadow-indigo-600/10 transition-all hover:bg-indigo-700 active:scale-97 disabled:opacity-50"
+            >
+              {changePasswordMutation.isPending ? 'Updating password...' : 'Update Password'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

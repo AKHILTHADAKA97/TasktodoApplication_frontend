@@ -11,11 +11,6 @@ const authService = {
     return response.data;
   },
 
-  googleLogin: async (idToken, photoURL = '') => {
-    const response = await API.post('/auth/google-login', { token: idToken, photoURL });
-    return response.data;
-  },
-
   getMe: async () => {
     const response = await API.get('/auth/me');
     return response.data;

@@ -328,15 +328,20 @@ const Todos = () => {
             return (
               <div
                 key={col.value}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={() => {
-                  if (activeDragId) {
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = 'move';
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const taskId = e.dataTransfer.getData('text/plain') || activeDragId;
+                  if (taskId) {
                     updateTaskMutation.mutate({
-                      id: activeDragId,
+                      id: taskId,
                       data: { status: col.value }
                     });
-                    setActiveDragId(null);
                   }
+                  setActiveDragId(null);
                 }}
                 className="flex flex-col rounded-xl bg-slate-50/50 p-3.5 dark:bg-[#09090b]/40 border border-slate-200/50 dark:border-zinc-800/40 min-h-[500px] transition-all"
               >
@@ -384,7 +389,11 @@ const Todos = () => {
                         <div
                           key={task._id}
                           draggable
-                          onDragStart={() => setActiveDragId(task._id)}
+                          onDragStart={(e) => {
+                            setActiveDragId(task._id);
+                            e.dataTransfer.setData('text/plain', task._id);
+                            e.dataTransfer.effectAllowed = 'move';
+                          }}
                           onDragEnd={() => setActiveDragId(null)}
                           className="group relative flex flex-col justify-between rounded-xl border border-slate-100 bg-white p-3 shadow-2xs transition-all duration-200 hover:shadow-xs hover:border-slate-200/80 dark:border-zinc-800 dark:bg-[#0d0d12] cursor-grab active:cursor-grabbing"
                         >

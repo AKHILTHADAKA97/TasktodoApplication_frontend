@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Mail, Lock, LogIn, ArrowRight, ShieldCheck, Activity } from 'lucide-react';
+import { Mail, Lock, LogIn, ArrowRight, Activity } from 'lucide-react';
 import { loginSchema } from '../schemas';
 import { useAuthStore } from '../store/authStore';
 import authService from '../services/authService';
-import { signInWithGoogle } from '../utils/firebase';
 
 const Login = () => {
   const [serverError, setServerError] = useState('');
-  const [socialLoading, setSocialLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
@@ -31,36 +29,13 @@ const Login = () => {
       setAuth(res.user, res.token);
       navigate('/dashboard');
     } catch (err) {
-      setServerError(
-        err.response?.data?.message || 'Failed to authenticate. Please check your credentials.'
-      );
+      const msg = err.response?.data?.message || 
+                  (err.message === 'Network Error' || !err.response 
+                    ? 'Could not connect to the server. Please check if the backend is running.' 
+                    : 'Failed to authenticate. Please check your credentials.');
+      setServerError(msg);
     } finally {
       setSubmitting(false);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      setServerError('');
-      setSocialLoading(true);
-      const result = await signInWithGoogle();
-      // Pass Firebase photoURL alongside the token so backend can save it
-      const res = await authService.googleLogin(result.token, result.user?.photoURL || '');
-      // Merge Google profile photo into user data immediately as fallback
-      const userWithPhoto = {
-        ...res.user,
-        avatar: res.user.avatar || result.user?.photoURL || ''
-      };
-      setAuth(userWithPhoto, res.token);
-      navigate('/dashboard');
-    } catch (err) {
-      if (err.message !== 'Mock Google login cancelled.') {
-        setServerError(
-          err.response?.data?.message || 'Google Auth verification failed. Try again.'
-        );
-      }
-    } finally {
-      setSocialLoading(false);
     }
   };
 
@@ -153,34 +128,6 @@ const Login = () => {
               )}
             </button>
           </form>
-
-          {/* Social login partition */}
-          <div className="my-6 flex items-center justify-between">
-            <span className="h-px w-full bg-slate-200 dark:bg-slate-800" />
-            <span className="px-3 text-2xs font-semibold text-slate-400 uppercase">Or</span>
-            <span className="h-px w-full bg-slate-200 dark:bg-slate-800" />
-          </div>
-
-          {/* Google Login Button */}
-          <button
-            onClick={handleGoogleLogin}
-            disabled={socialLoading}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 active:scale-98 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-900"
-          >
-            {socialLoading ? (
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-slate-600" />
-            ) : (
-              <>
-                <svg className="h-5 w-5" viewBox="0 0 24 24">
-                  <path
-                    fill="#EA4335"
-                    d="M12.24 10.285V14.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.859-3.578-7.859-8s3.53-8 7.859-8c2.46 0 4.105 1.025 5.047 1.926l3.245-3.125C18.29 1.84 15.539.9 12.24.9c-6.14 0-11.11 4.97-11.11 11.1s4.97 11.1 11.11 11.1c6.41 0 10.67-4.5 10.67-10.84 0-.73-.08-1.285-.18-1.975H12.24z"
-                  />
-                </svg>
-                <span>Continue with Google</span>
-              </>
-            )}
-          </button>
 
           {/* Registration link redirect */}
           <p className="mt-8 text-center text-xs text-slate-500 dark:text-slate-400">

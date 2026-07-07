@@ -29,9 +29,11 @@ const Register = () => {
       setAuth(res.user, res.token);
       navigate('/dashboard');
     } catch (err) {
-      setServerError(
-        err.response?.data?.message || 'Registration failed. This email might already be in use.'
-      );
+      const msg = err.response?.data?.message || 
+                  (err.message === 'Network Error' || !err.response 
+                    ? 'Could not connect to the server. Please check if the backend is running.' 
+                    : 'Registration failed. This email might already be in use.');
+      setServerError(msg);
     } finally {
       setSubmitting(false);
     }
