@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@variant dark (.dark &);
+
+@theme {
+  --color-indigo-50: #eefdf7;
+  --color-indigo-100: #d1f7e6;
+  --color-indigo-200: #a7eed0;
+  --color-indigo-300: #6ce0b2;
+  --color-indigo-400: #33cc92;
+  --color-indigo-500: #00a76f;
+  --color-indigo-600: #00a76f;
+  --color-indigo-700: #00875a;
+  --color-indigo-800: #006b48;
+  --color-indigo-900: #00583c;
+  --color-indigo-950: #003121;
+  --text-2xs: 0.65rem;
+  --text-3xs: 0.58rem;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 dark:bg-black dark:text-slate-100 transition-colors duration-300 antialiased;
+    font-family: 'Inter', 'Outfit', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Pro Developer Theme Layout Styles */
+.glass {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dark .glass {
+  background: rgba(9, 9, 11, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card {
+  background: #ffffff;
+  border: 1px solid #eef2f6;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.01), 0 2px 8px -1px rgba(15, 23, 42, 0.01);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .glass-card {
+  background: #0d0d12;
+  border: 1px solid #1c1c24;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+}
+
+/* Sidebar Custom Styling */
+aside {
+  background: #ffffff !important;
+}
+
+.dark aside {
+  background: #000000 !important;
+  border-color: #1c1c24 !important;
+}
+
+/* Header Custom Styling */
+header {
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.dark header {
+  background: rgba(0, 0, 0, 0.8) !important;
+  border-color: #1c1c24 !important;
+}
+
+/* Dynamic Input Fields Override */
+.dark input, 
+.dark select, 
+.dark textarea {
+  background-color: #050507 !important;
+  border-color: #1c1c24 !important;
+  color: #ffffff !important;
+}
+
+.dark input:focus, 
+.dark select:focus, 
+.dark textarea:focus {
+  border-color: #00a76f !important;
+  box-shadow: 0 0 0 3px rgba(0, 167, 111, 0.15) !important;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 dark:bg-[#1c1c24] rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-300 dark:bg-[#2b2b36];
+}
