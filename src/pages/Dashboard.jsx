@@ -102,7 +102,7 @@ const Dashboard = () => {
   // Metric calculation variables
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(t => t.status === 'completed').length;
-  const pendingTasks = tasks.filter(t => t.status === 'pending' || t.status === 'in progress').length;
+  const pendingTasks = tasks.filter(t => t.status !== 'completed').length;
   const highPriorityTasks = tasks.filter(t => t.priority === 'high').length;
   
   // Tasks due today filter
@@ -126,11 +126,13 @@ const Dashboard = () => {
   const statusCounts = {
     pending: tasks.filter(t => t.status === 'pending').length,
     'in progress': tasks.filter(t => t.status === 'in progress').length,
+    review: tasks.filter(t => t.status === 'review').length,
     completed: completedTasks
   };
   const statusData = [
     { name: 'Pending', count: statusCounts.pending, color: '#64748b' },
     { name: 'In Progress', count: statusCounts['in progress'], color: '#3b82f6' },
+    { name: 'Review', count: statusCounts.review, color: '#f59e0b' },
     { name: 'Completed', count: statusCounts.completed, color: '#10b981' }
   ];
 

@@ -19,7 +19,7 @@ export const taskSchema = z.object({
   title: z.string().min(1, 'Task title is required').max(100, 'Title must be 100 characters or less').trim(),
   description: z.string().max(500, 'Description must be 500 characters or less').optional().default(''),
   priority: z.enum(['low', 'medium', 'high']).default('medium'),
-  status: z.enum(['pending', 'in progress', 'completed']).default('pending'),
+  status: z.enum(['pending', 'in progress', 'review', 'completed']).default('pending'),
   category: z.enum(['personal', 'work', 'study', 'shopping', 'health', 'others']).default('others'),
   dueDate: z.string().optional().or(z.literal('')).transform(val => val ? new Date(val).toISOString() : null),
 });

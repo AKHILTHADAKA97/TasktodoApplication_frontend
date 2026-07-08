@@ -20,5 +20,6 @@ export const PRIORITIES = [
 export const STATUSES = [
   { value: 'pending', label: 'Pending', color: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' },
   { value: 'in progress', label: 'In Progress', color: 'bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400' },
+  { value: 'review', label: 'Review', color: 'bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400' },
   { value: 'completed', label: 'Completed', color: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400' }
 ];
